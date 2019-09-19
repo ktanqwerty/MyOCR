@@ -1,6 +1,7 @@
 package com.example.myocr20;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -27,14 +28,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
+import android.widget.Button;
 import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     FloatingActionButton open_camera;
+    FloatingActionButton gallery;
     ImageView imageView;
     private static final String TAG = "SearchActivity";
-    private static final int REQUEST_CODE = 1;
+    private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int IMAGE_PICK= 1000;
+    private static final int PERMISSION_CODE = 1001;
+    private static final int GALLERY_REQUEST_CODE = 2;
     String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
 
@@ -56,20 +62,31 @@ public class MainActivity extends AppCompatActivity
         //camera
 
         open_camera = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+        gallery = (FloatingActionButton) findViewById(R.id.gallery);
 
 
         Log.d(TAG, "verify Permission: Asking user for permission");
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(), permissions[0]) != PackageManager
                 .PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(), permissions[1]) != PackageManager
                 .PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, permissions, REQUEST_CODE);
+            ActivityCompat.requestPermissions(MainActivity.this, permissions, CAMERA_REQUEST_CODE);
+            ActivityCompat.requestPermissions(MainActivity.this, permissions, 2);
         }
 
         open_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, 7);
+                startActivityForResult(intent, CAMERA_REQUEST_CODE);
+            }
+        });
+
+        gallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentn = new Intent(Intent.ACTION_PICK);
+                intentn.setType("image/*");
+                startActivityForResult(intentn.createChooser(intentn,"SELECT IMAGE"),GALLERY_REQUEST_CODE);
             }
         });
 
@@ -132,11 +149,20 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 7 && resultCode == RESULT_OK) {
-            Bitmap bitmapImage = (Bitmap) data.getExtras().get("data");
-            Intent   camintent= new Intent(MainActivity.this,ImageText.class);
-            camintent.putExtra("bitmap", bitmapImage);
-            startActivity(camintent);
+        if (resultCode == RESULT_OK ){
+                if(requestCode == CAMERA_REQUEST_CODE) {
+                    Bitmap bitmapImage1 = (Bitmap) data.getExtras().get("data");
+                    Intent   camintent1= new Intent(MainActivity.this,ImageText.class);
+                    camintent1.putExtra("bitmap", bitmapImage1);
+                    startActivity(camintent1);
+                }
+                else if(requestCode == GALLERY_REQUEST_CODE ){
+                    Log.i("nice","gallery is working");
+                }
+
+
+
+
 
         }
 
