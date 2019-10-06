@@ -2,6 +2,7 @@ package com.example.myocr20;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -25,10 +26,9 @@ public class ImageText extends AppCompatActivity {
 
 
     ImageView imageView;
-    Button button,speak;
+    Button scantext;
     Bitmap bitma;
-    EditText editText;
-    TextToSpeech textToSpeech;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,91 +36,32 @@ public class ImageText extends AppCompatActivity {
         setContentView(R.layout.activity_image_text);
 
         imageView = (ImageView)findViewById(R.id.imageView1);
-        button = (Button)findViewById(R.id.button2);
-        speak = (Button)findViewById(R.id.button3);
-        editText = (EditText)findViewById(R.id.editText);
+        scantext = (Button)findViewById(R.id.scantext);
+
+
 
         Intent intent = getIntent();
         bitma = (Bitmap) intent.getParcelableExtra("bitmap");
         imageView.setImageBitmap(bitma);
 
-
-        button.setOnClickListener(new View.OnClickListener() {
+        scantext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
-                if (!textRecognizer.isOperational()) {
-                    Toast.makeText(ImageText.this,"NO TEXT", LENGTH_SHORT);
-                } else{
-                    Frame frame = new Frame.Builder().setBitmap(bitma).build();
-
-                    SparseArray<TextBlock> items = textRecognizer.detect(frame);
-
-                    StringBuilder a = new StringBuilder();
-                    for(int i=0;i<items.size();i++)
-                    {
-                        TextBlock myItem=items.valueAt(i);
-                        a.append(myItem.getValue());
-                        a.append("\n");
-                    }
-
-                    if(items.size() ==0)
-                    {
-                        editText.setText("NO TEXT");
-                    }else{
-                        editText.setText(a.toString());}
-                }
-            }
-        });
-
-
-        speak.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
-                if (!textRecognizer.isOperational()) {
-                    Toast.makeText(ImageText.this,"NO TEXT", LENGTH_SHORT);
-                } else{
-                    Frame frame = new Frame.Builder().setBitmap(bitma).build();
-
-                    SparseArray<TextBlock> items = textRecognizer.detect(frame);
-
-                    StringBuilder a = new StringBuilder();
-                    for(int i=0;i<items.size();i++)
-                    {
-                        TextBlock myItem=items.valueAt(i);
-                        a.append(myItem.getValue());
-                        a.append("\n");
-                    }
-
-                    String text = a.toString();
-
-                    textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-                        @Override
-                        public void onInit(int i) {
-                            if(i!=TextToSpeech.ERROR) {
-                                textToSpeech.setLanguage(Locale.UK);
-                            }
-                        }
-                    });
-                    textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
-                }
-
+                Intent intent2 = new Intent(ImageText.this, scanfinal.class);
+                intent2.putExtra("Bitmap",bitma);
+                startActivity(intent2);
             }
         });
 
 
 
+
+
+
+
+
     }
 
-    @Override
-    protected void onDestroy() {
-        if(textToSpeech != null)
-        {
-            textToSpeech.stop();
-            textToSpeech.shutdown();
-        }
-        super.onDestroy();
-    }
+
 
 }

@@ -157,6 +157,8 @@ public class MainActivity extends AppCompatActivity
                     Intent   camintent1= new Intent(MainActivity.this,ImageText.class);
                     camintent1.putExtra("bitmap", bitmapImage1);
                     startActivity(camintent1);
+
+
                 }
                 else if(requestCode == GALLERY_REQUEST_CODE ){
                     Log.i("nice","gallery is working");
