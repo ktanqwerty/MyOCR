@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.View;
@@ -15,6 +17,9 @@ import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class scanfinal extends AppCompatActivity {
@@ -22,6 +27,7 @@ public class scanfinal extends AppCompatActivity {
     Button savetext;
     EditText editText;
      String scannedtext;
+     Uri uri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +36,22 @@ public class scanfinal extends AppCompatActivity {
 
         Intent intent2 = getIntent();
         bitmap1 = (Bitmap) intent2.getParcelableExtra("Bitmap");
+
+        //change
+        if(bitmap1==null) {
+            uri = intent2.getParcelableExtra("uri");
+
+            InputStream imageStream = null;
+            try {
+                imageStream = getContentResolver().openInputStream(uri);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            bitmap1 = BitmapFactory.decodeStream(imageStream);
+        }
+
+
+
         editText = findViewById(R.id.editText);
         savetext = findViewById(R.id.saveText);
 

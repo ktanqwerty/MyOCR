@@ -5,11 +5,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 
@@ -30,6 +33,10 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -84,8 +91,9 @@ public class MainActivity extends AppCompatActivity
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentn = new Intent(Intent.ACTION_PICK);
+                Intent intentn = new Intent();
                 intentn.setType("image/*");
+                intentn.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intentn.createChooser(intentn,"SELECT IMAGE"),GALLERY_REQUEST_CODE);
             }
         });
@@ -151,7 +159,7 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK ){
+        if (resultCode == RESULT_OK){
                 if(requestCode == CAMERA_REQUEST_CODE) {
                     Bitmap bitmapImage1 = (Bitmap) data.getExtras().get("data");
                     Intent   camintent1= new Intent(MainActivity.this,ImageText.class);
@@ -161,7 +169,22 @@ public class MainActivity extends AppCompatActivity
 
                 }
                 else if(requestCode == GALLERY_REQUEST_CODE ){
+                    Uri uri = data.getData();
+                   /*  InputStream imageStream = null;
+                    try {
+                        imageStream = getContentResolver().openInputStream(uri);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    final Bitmap bitmap2 = BitmapFactory.decodeStream(imageStream);
+                    */
+
+
+                    Intent   gallintent= new Intent(MainActivity.this,ImageText.class);
+                    gallintent.putExtra("uri", uri);
                     Log.i("nice","gallery is working");
+                    startActivity(gallintent);
+
                 }
 
 

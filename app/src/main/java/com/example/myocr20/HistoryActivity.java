@@ -35,11 +35,11 @@ public class HistoryActivity extends AppCompatActivity {
             SQLiteDatabase myDatabase = this.openOrCreateDatabase("Users", MODE_PRIVATE, null);
             myDatabase.execSQL("CREATE TABLE IF NOT EXISTS users (name VARCHAR,id INTEGER  )");
             if(scannedtextt !=null) {
-                myDatabase.execSQL("INSERT INTO users(name,age) VALUES ('" +scannedtextt+ "',3)");
+                myDatabase.execSQL("INSERT INTO users(name,id) VALUES ('" +scannedtextt+ "',3)");
             }
             Cursor c = myDatabase.rawQuery("SELECT * FROM users", null);
             int nameindex = c.getColumnIndex("name");
-            int ageindex = c.getColumnIndex("age");
+            int ageindex = c.getColumnIndex("id");
             c.moveToFirst();
             while (c != null) {
                 Log.i("name", c.getString(nameindex));
