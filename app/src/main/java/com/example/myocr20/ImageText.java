@@ -46,10 +46,13 @@ public class ImageText extends AppCompatActivity {
         Intent intent = getIntent();
         bitma = (Bitmap) intent.getParcelableExtra("bitmap");
         final Uri uri = intent.getParcelableExtra("uri");
-        if(bitma==null){
-            imageView.setImageURI(uri);
-        }
-        else  imageView.setImageBitmap(bitma);
+            if(bitma==null){
+                imageView.setImageURI(uri);
+            }
+            else  imageView.setImageBitmap(bitma);
+
+
+
 
 
 
@@ -57,10 +60,12 @@ public class ImageText extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent2 = new Intent(ImageText.this, scanfinal.class);
-                if(bitma==null){
-                    intent2.putExtra("uri",uri);
-                }
-                else intent2.putExtra("Bitmap",bitma);
+                    if(bitma==null){
+                        intent2.putExtra("uri",uri);
+                    }
+                    else intent2.putExtra("Bitmap",bitma);
+
+
                 startActivity(intent2);
             }
         });

@@ -35,21 +35,23 @@ public class scanfinal extends AppCompatActivity {
 
 
         Intent intent2 = getIntent();
-        bitmap1 = (Bitmap) intent2.getParcelableExtra("Bitmap");
+
 
         //change
-        if(bitmap1==null) {
+            bitmap1 = intent2.getParcelableExtra("Bitmap");
             uri = intent2.getParcelableExtra("uri");
+            if(bitmap1==null) {
 
-            InputStream imageStream = null;
-            try {
-                imageStream = getContentResolver().openInputStream(uri);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+
+                InputStream imageStream = null;
+                try {
+                    imageStream = getContentResolver().openInputStream(uri);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                bitmap1 = BitmapFactory.decodeStream(imageStream);
+
             }
-            bitmap1 = BitmapFactory.decodeStream(imageStream);
-        }
-
 
 
         editText = findViewById(R.id.editText);

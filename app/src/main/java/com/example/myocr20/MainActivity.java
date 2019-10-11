@@ -24,6 +24,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageActivity;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -91,10 +94,13 @@ public class MainActivity extends AppCompatActivity
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentn = new Intent();
+                /*Intent intentn = new Intent();
                 intentn.setType("image/*");
                 intentn.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intentn.createChooser(intentn,"SELECT IMAGE"),GALLERY_REQUEST_CODE);
+                startActivityForResult(intentn.createChooser(intentn,"SELECT IMAGE"),GALLERY_REQUEST_CODE);*/
+                CropImage.activity()
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(MainActivity.this);
             }
         });
 
@@ -161,7 +167,11 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK){
                 if(requestCode == CAMERA_REQUEST_CODE) {
+                   // Uri uri1 = data.getData();
+                   /* CropImage.activity(uri1)
+                            .start(this);*/
                     Bitmap bitmapImage1 = (Bitmap) data.getExtras().get("data");
+                  //  Uri uri = getImageUri(getApplicationContext(),bitmapImage1);
                     Intent   camintent1= new Intent(MainActivity.this,ImageText.class);
                     camintent1.putExtra("bitmap", bitmapImage1);
                     startActivity(camintent1);
@@ -178,6 +188,8 @@ public class MainActivity extends AppCompatActivity
                     }
                     final Bitmap bitmap2 = BitmapFactory.decodeStream(imageStream);
                     */
+                   //Crop Activity below
+
 
 
                     Intent   gallintent= new Intent(MainActivity.this,ImageText.class);
@@ -186,7 +198,18 @@ public class MainActivity extends AppCompatActivity
                     startActivity(gallintent);
 
                 }
-
+            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    Uri uri = result.getUri();
+                    Intent   cropintent= new Intent(MainActivity.this,ImageText.class);
+                    cropintent.putExtra("uri", uri);
+                    Log.i("nice","crop is working");
+                    startActivity(cropintent);
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Exception error = result.getError();
+                }
+            }
 
 
 
