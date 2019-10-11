@@ -2,8 +2,11 @@ package com.example.myocr20;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -37,6 +40,7 @@ import android.view.Menu;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,6 +55,7 @@ public class MainActivity extends AppCompatActivity
     private static final int IMAGE_PICK= 1000;
     private static final int PERMISSION_CODE = 1001;
     private static final int GALLERY_REQUEST_CODE = 2;
+    Uri imageUri;
     String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
 
@@ -86,7 +91,16 @@ public class MainActivity extends AppCompatActivity
         open_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                /*Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, CAMERA_REQUEST_CODE);*/
+
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE, "New Picture");
+                values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+                 imageUri = getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(intent, CAMERA_REQUEST_CODE);
             }
         });
@@ -170,11 +184,30 @@ public class MainActivity extends AppCompatActivity
                    // Uri uri1 = data.getData();
                    /* CropImage.activity(uri1)
                             .start(this);*/
-                    Bitmap bitmapImage1 = (Bitmap) data.getExtras().get("data");
+
                   //  Uri uri = getImageUri(getApplicationContext(),bitmapImage1);
-                    Intent   camintent1= new Intent(MainActivity.this,ImageText.class);
+
+                    //change
+                   /* Bitmap bitmapImage1 = (Bitmap) data.getExtras().get("data");
+                    Uri tempUri = getImageUri(getApplicationContext(), bitmapImage1);
+                    CropImage.activity(tempUri)
+                            .start(this);*/
+                    //change 2
+                    try {
+                        Bitmap thumbnail = MediaStore.Images.Media.getBitmap(
+                                getContentResolver(), imageUri);
+
+                        String imageurl = getRealPathFromURI(imageUri);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    CropImage.activity(imageUri)
+                            .start(this);
+
+                   /* Intent   camintent1= new Intent(MainActivity.this,ImageText.class);
                     camintent1.putExtra("bitmap", bitmapImage1);
-                    startActivity(camintent1);
+                    startActivity(camintent1);*/
 
 
                 }
@@ -217,4 +250,22 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
+
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
+    private Uri getImageUri(Context inContext, Bitmap inImage) {
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        //inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
 }
