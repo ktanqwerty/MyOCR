@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "713378021139",
+    "firebase_url": "https://opticalcr-c8184.firebaseio.com",
+    "project_id": "opticalcr-c8184",
+    "storage_bucket": "opticalcr-c8184.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:713378021139:android:72d111340e8d311dfce4e6",
+        "android_client_info": {
+          "package_name": "com.example.myocr20"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "713378021139-ljg51hlkaoev5e7cr9r0gqe3jqjngl9b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.myocr20",
+            "certificate_hash": "0f2d6330bcfa70cb3c70a7736a163bcc288f94e5"
+          }
+        },
+        {
+          "client_id": "713378021139-urd6e3gg29k69aalq3l384gr8303qb1u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmXzSnI9I8nuqLkT01Qnc9v6q6WRYpsT4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "713378021139-urd6e3gg29k69aalq3l384gr8303qb1u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
