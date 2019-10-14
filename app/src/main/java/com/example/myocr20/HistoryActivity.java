@@ -1,5 +1,6 @@
 package com.example.myocr20;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -14,50 +15,72 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity {
 
+    private static final int RC_SIGN_IN =123 ;
+    ListView listView;
+    ArrayList<String> list;
+    ArrayAdapter<String> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        ListView listView = (ListView) findViewById(R.id.list_view);
-        ArrayList<String> arrayList = new ArrayList<String>();
-
-        String scannedtextt;
-        Intent intent4 = getIntent();
-        scannedtextt = intent4.getStringExtra("scannedtext");
-
-        try {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null) {
 
 
-            SQLiteDatabase myDatabase = this.openOrCreateDatabase("Users", MODE_PRIVATE, null);
-            myDatabase.execSQL("CREATE TABLE IF NOT EXISTS users (name VARCHAR,id INTEGER  )");
-            if(scannedtextt !=null) {
-                myDatabase.execSQL("INSERT INTO users(name,id) VALUES ('" +scannedtextt+ "',3)");
-            }
-            Cursor c = myDatabase.rawQuery("SELECT * FROM users", null);
-            int nameindex = c.getColumnIndex("name");
-            int ageindex = c.getColumnIndex("id");
-            c.moveToFirst();
-            while (c != null) {
-                Log.i("name", c.getString(nameindex));
-                arrayList.add(c.getString(nameindex));
-                c.moveToNext();
-            }
+            listView = findViewById(R.id.list_view);
+            list = new ArrayList<>();
+            adapter = new ArrayAdapter<String>(this, R.layout.user_info, R.id.userinfo, list);
+            Intent intent = getIntent();
+            String a = intent.getStringExtra("scannedtext");
+             user = FirebaseAuth.getInstance().getCurrentUser();
+            Log.i("uid", user.getUid());
+            // Write a message to the database
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("Users");
+            //myRef.child("child").push().setValue("sdf");
+            String b = "abc";
+            // myRef.child(user.getUid()).child("1").setValue(b);
+            // myRef.child(user.getUid()).child(b);
+
+            myRef = database.getReference().child("Users").child(user.getUid());
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        String st = ds.getValue(String.class);
+                        list.add(st);
+                        Log.i("dsf",st);
+                    }
+                    listView.setAdapter(adapter);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
 
         }
+        else {
 
-
-        catch (Exception e){
-            e.printStackTrace();
         }
-
-
-        arrayList.add("fds");
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,arrayList);
-        listView.setAdapter(arrayAdapter);
 
     }
 }

@@ -2,11 +2,17 @@ package com.example.myocr20;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.SearchManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
@@ -16,18 +22,28 @@ import android.widget.Toast;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Locale;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class scanfinal extends AppCompatActivity {
     Bitmap bitmap1;
     Button savetext;
+    Button copybutton;
+    Button googlebutton;
+    Button mailbutton;
+    Button speakbutton;
     EditText editText;
      String scannedtext;
      Uri uri;
+    TextToSpeech tts;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +72,10 @@ public class scanfinal extends AppCompatActivity {
 
         editText = findViewById(R.id.editText);
         savetext = findViewById(R.id.saveText);
+        copybutton = findViewById(R.id.copy);
+        googlebutton = findViewById(R.id.googleb);
+        mailbutton = findViewById(R.id.gmailb);
+        speakbutton = findViewById(R.id.speakb);
 
         TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
         if (!textRecognizer.isOperational()) {
@@ -74,6 +94,7 @@ public class scanfinal extends AppCompatActivity {
                 a.append("\n");
             }
             scannedtext = a.toString();
+           // Log.i("a",scannedtext);
             if(items.size() ==0)
             {
                 editText.setText("NO TEXT");
@@ -84,18 +105,75 @@ public class scanfinal extends AppCompatActivity {
     savetext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent3  =  new Intent(scanfinal.this , HistoryActivity.class);
+               // Intent intent3  =  new Intent(scanfinal.this , HistoryActivity.class);
                 if(scannedtext != null) {
-                    intent3.putExtra("scannedtext", scannedtext.toString());
+                 //  intent3.putExtra("scannedtext", scannedtext.toString());
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference("Users");
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    myRef.child(user.getUid()).push().setValue(scannedtext);
+                    Toast.makeText(scanfinal.this,"Text Saved Sucessfully", LENGTH_SHORT).show();
 
                 }
 
-                startActivity(intent3);
+                //startActivity(intent3);
+            }
+        });
+
+        copybutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("label", scannedtext);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(scanfinal.this,"Text Copied to Clipboard",LENGTH_SHORT).show();
+            }
+        });
+
+        googlebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+                intent.putExtra(SearchManager.QUERY, scannedtext); // query contains search string
+                startActivity(intent);
+            }
+        });
+
+        mailbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO , Uri.parse("mailto:"+ scannedtext));
+                //emailIntent.setType("plain/text");
+                startActivity(emailIntent);
+            }
+        });
+
+        speakbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                 tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+                    @Override
+                    public void onInit(int i) {
+                        if(i!= TextToSpeech.ERROR){
+                            tts.setLanguage(Locale.US);
+                            String toSpeak = scannedtext;
+                            tts.speak(toSpeak,TextToSpeech.QUEUE_FLUSH,null);
+                        }
+                    }
+                });
+
+
+
             }
         });
 
 
-
-
+    }
+    public void onPause(){
+        if(tts !=null){
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onPause();
     }
 }

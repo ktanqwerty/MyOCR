@@ -1,19 +1,16 @@
-package com.example.myocr20;
+    package com.example.myocr20;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import android.provider.MediaStore;
 import android.util.Log;
@@ -27,8 +24,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageActivity;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -37,15 +35,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
-public class MainActivity extends AppCompatActivity
+    public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     FloatingActionButton open_camera;
     FloatingActionButton gallery;
@@ -55,6 +50,8 @@ public class MainActivity extends AppCompatActivity
     private static final int IMAGE_PICK= 1000;
     private static final int PERMISSION_CODE = 1001;
     private static final int GALLERY_REQUEST_CODE = 2;
+    //TextView textView;
+    TextView textView1;
     Uri imageUri;
     String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
@@ -63,8 +60,10 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        NavigationView nav = findViewById(R.id.nav_view);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        textView1=findViewById(R.id.textemail);
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -74,6 +73,13 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        View headerview = nav.getHeaderView(0);
+        TextView htextview = headerview.findViewById(R.id.textemail);
+        htextview.setText(user.getEmail());
+
         //camera
 
         open_camera = (FloatingActionButton) findViewById(R.id.floatingActionButton);
@@ -147,7 +153,10 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            firebaseAuth.signOut();
+            Intent intent = new Intent(this,firstActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

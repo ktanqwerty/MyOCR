@@ -26,31 +26,6 @@
         app:srcCompat="@android:drawable/ic_menu_camera"
         tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="293dp"
-        android:layout_height="79dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="100dp"
-        android:hint="MyOCR"
-        android:text="     MyOCR"
-        android:textAllCaps="false"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display3"
-        android:textColor="#4A657C78"
-        android:textStyle="bold"
-        android:typeface="sans"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.372"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.442"
-        tools:visibility="visible" />
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/gallery"
         android:layout_width="wrap_content"
