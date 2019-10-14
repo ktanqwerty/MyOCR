@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -40,7 +41,6 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user!=null) {
 
 
             listView = findViewById(R.id.list_view);
@@ -76,11 +76,20 @@ public class HistoryActivity extends AppCompatActivity {
                 }
             });
 
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    String value1 = (String) adapterView.getItemAtPosition(i);
+                    //Toast.makeText(HistoryActivity.this,value1,Toast.LENGTH_SHORT).show();
+                    Intent intent2 = new Intent(HistoryActivity.this,scanfinal.class);
+                    intent2.putExtra("value",value1);
+                    startActivity(intent2);
+                }
+            });
 
-        }
-        else {
 
-        }
+
+
 
     }
 }

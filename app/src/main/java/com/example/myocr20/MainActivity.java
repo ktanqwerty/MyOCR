@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import android.provider.MediaStore;
@@ -39,13 +40,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
+import java.util.List;
 
     public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     FloatingActionButton open_camera;
     FloatingActionButton gallery;
     ImageView imageView;
-    private static final String TAG = "SearchActivity";
+        private static final int RC_SIGN_IN =123 ;
+
+        private static final String TAG = "SearchActivity";
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int IMAGE_PICK= 1000;
     private static final int PERMISSION_CODE = 1001;
@@ -60,6 +65,25 @@ import java.io.ByteArrayOutputStream;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user==null) {
+
+
+            List<AuthUI.IdpConfig> providers = Arrays.asList(
+                    new AuthUI.IdpConfig.EmailBuilder().build(),
+
+                    new AuthUI.IdpConfig.GoogleBuilder().build(),
+                    new AuthUI.IdpConfig.AnonymousBuilder().build());
+
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(providers)
+                            .build(),
+                    RC_SIGN_IN);
+        }
         NavigationView nav = findViewById(R.id.nav_view);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,7 +98,7 @@ import java.io.ByteArrayOutputStream;
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+         user = FirebaseAuth.getInstance().getCurrentUser();
 
         View headerview = nav.getHeaderView(0);
         TextView htextview = headerview.findViewById(R.id.textemail);
@@ -155,8 +179,24 @@ import java.io.ByteArrayOutputStream;
         if (id == R.id.action_settings) {
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             firebaseAuth.signOut();
-            Intent intent = new Intent(this,firstActivity.class);
-            startActivity(intent);
+           FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if(user==null) {
+
+
+                List<AuthUI.IdpConfig> providers = Arrays.asList(
+                        new AuthUI.IdpConfig.EmailBuilder().build(),
+
+                        new AuthUI.IdpConfig.GoogleBuilder().build(),
+                        new AuthUI.IdpConfig.AnonymousBuilder().build());
+
+                startActivityForResult(
+                        AuthUI.getInstance()
+                                .createSignInIntentBuilder()
+                                .setAvailableProviders(providers)
+                                .build(),
+                        RC_SIGN_IN);
+            }
+
         }
 
         return super.onOptionsItemSelected(item);

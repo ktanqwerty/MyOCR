@@ -44,6 +44,7 @@ public class scanfinal extends AppCompatActivity {
      String scannedtext;
      Uri uri;
     TextToSpeech tts;
+    String value1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,25 +52,6 @@ public class scanfinal extends AppCompatActivity {
 
 
         Intent intent2 = getIntent();
-
-
-        //change
-            bitmap1 = intent2.getParcelableExtra("Bitmap");
-            uri = intent2.getParcelableExtra("uri");
-            if(bitmap1==null) {
-
-
-                InputStream imageStream = null;
-                try {
-                    imageStream = getContentResolver().openInputStream(uri);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                bitmap1 = BitmapFactory.decodeStream(imageStream);
-
-            }
-
-
         editText = findViewById(R.id.editText);
         savetext = findViewById(R.id.saveText);
         copybutton = findViewById(R.id.copy);
@@ -77,31 +59,56 @@ public class scanfinal extends AppCompatActivity {
         mailbutton = findViewById(R.id.gmailb);
         speakbutton = findViewById(R.id.speakb);
 
-        TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
-        if (!textRecognizer.isOperational()) {
-           Toast.makeText(scanfinal.this,"NO TEXT", LENGTH_SHORT);
-        } else{
-            Frame frame = new Frame.Builder().setBitmap(bitmap1).build();
+        //change
+            bitmap1 = intent2.getParcelableExtra("Bitmap");
+            uri = intent2.getParcelableExtra("uri");
+            value1 = intent2.getStringExtra("value");
 
-            SparseArray<TextBlock> items = textRecognizer.detect(frame);
-            StringBuilder a = new StringBuilder();
+            if(value1==null) {
 
 
-            for(int i=0;i<items.size();i++)
-            {
-                TextBlock myItem=items.valueAt(i);
-                a.append(myItem.getValue());
-                a.append("\n");
+                if (bitmap1 == null) {
+
+
+                    InputStream imageStream = null;
+                    try {
+                        imageStream = getContentResolver().openInputStream(uri);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    bitmap1 = BitmapFactory.decodeStream(imageStream);
+
+                }
+
+
+                TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+                if (!textRecognizer.isOperational()) {
+                    Toast.makeText(scanfinal.this, "NO TEXT", LENGTH_SHORT);
+                } else {
+                    Frame frame = new Frame.Builder().setBitmap(bitmap1).build();
+
+                    SparseArray<TextBlock> items = textRecognizer.detect(frame);
+                    StringBuilder a = new StringBuilder();
+
+
+                    for (int i = 0; i < items.size(); i++) {
+                        TextBlock myItem = items.valueAt(i);
+                        a.append(myItem.getValue());
+                        a.append("\n");
+                    }
+                    scannedtext = a.toString();
+                    // Log.i("a",scannedtext);
+                    if (items.size() == 0) {
+                        editText.setText("NO TEXT");
+                    } else {
+                        editText.setText(a.toString());
+                    }
+                }
             }
-            scannedtext = a.toString();
-           // Log.i("a",scannedtext);
-            if(items.size() ==0)
-            {
-                editText.setText("NO TEXT");
-            }else{
-                editText.setText(a.toString());}
-        }
-
+            else {
+                scannedtext= value1;
+                editText.setText(value1);
+            }
     savetext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
