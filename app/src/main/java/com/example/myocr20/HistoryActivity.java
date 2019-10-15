@@ -47,7 +47,7 @@ public class HistoryActivity extends AppCompatActivity {
             list = new ArrayList<>();
             adapter = new ArrayAdapter<String>(this, R.layout.user_info, R.id.userinfo, list);
             Intent intent = getIntent();
-            String a = intent.getStringExtra("scannedtext");
+            //String a = intent.getStringExtra("scannedtext");
              user = FirebaseAuth.getInstance().getCurrentUser();
             Log.i("uid", user.getUid());
             // Write a message to the database

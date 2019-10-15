@@ -49,7 +49,6 @@ import java.util.List;
     FloatingActionButton gallery;
     ImageView imageView;
         private static final int RC_SIGN_IN =123 ;
-
         private static final String TAG = "SearchActivity";
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int IMAGE_PICK= 1000;
