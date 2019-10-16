@@ -10,6 +10,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.DrawableImageViewTarget;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -38,6 +40,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
@@ -64,6 +67,8 @@ import java.util.List;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -107,7 +112,9 @@ import java.util.List;
 
         open_camera = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         gallery = (FloatingActionButton) findViewById(R.id.gallery);
-
+        ImageView imageView = (ImageView) findViewById(R.id.imageView);
+        DrawableImageViewTarget imageViewTarget = new DrawableImageViewTarget(imageView);
+        Glide.with(this).load(R.drawable.scanning).into(imageViewTarget);
 
         Log.d(TAG, "verify Permission: Asking user for permission");
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(), permissions[0]) != PackageManager

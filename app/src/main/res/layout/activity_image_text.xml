@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="437dp"
+        android:layout_height="677dp"
         android:layout_marginBottom="64dp"
         app:layout_constraintBottom_toBottomOf="@+id/scantext"
         app:layout_constraintEnd_toEndOf="parent"
@@ -17,12 +17,14 @@
 
     <Button
         android:id="@+id/scantext"
-        android:layout_width="0dp"
-        android:layout_height="68dp"
+        android:layout_width="490dp"
+        android:layout_height="66dp"
+        android:background="@drawable/fui_idp_button_background_github"
         android:text="Scan Text"
+        android:textColor="@color/common_google_signin_btn_text_dark_default"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.27"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
