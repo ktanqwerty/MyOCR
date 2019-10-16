@@ -42,9 +42,9 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_history);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-
+        list = new ArrayList<>();
             listView = findViewById(R.id.list_view);
-            list = new ArrayList<>();
+
             adapter = new ArrayAdapter<String>(this, R.layout.user_info, R.id.userinfo, list);
             Intent intent = getIntent();
             //String a = intent.getStringExtra("scannedtext");
@@ -62,6 +62,7 @@ public class HistoryActivity extends AppCompatActivity {
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        list.clear();
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         String st = ds.getValue(String.class);
                         list.add(st);

@@ -109,23 +109,33 @@ public class scanfinal extends AppCompatActivity {
                 scannedtext= value1;
                 editText.setText(value1);
             }
-    savetext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               // Intent intent3  =  new Intent(scanfinal.this , HistoryActivity.class);
-                if(scannedtext != null) {
-                 //  intent3.putExtra("scannedtext", scannedtext.toString());
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference("Users");
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    myRef.child(user.getUid()).push().setValue(scannedtext);
-                    Toast.makeText(scanfinal.this,"Text Saved Sucessfully", LENGTH_SHORT).show();
 
-                }
 
-                //startActivity(intent3);
-            }
-        });
+
+                savetext.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // Intent intent3  =  new Intent(scanfinal.this , HistoryActivity.class);
+                        if(value1==null) {
+
+
+                            if (scannedtext != null) {
+                                //  intent3.putExtra("scannedtext", scannedtext.toString());
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                DatabaseReference myRef = database.getReference("Users");
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                myRef.child(user.getUid()).push().setValue(scannedtext);
+                                Toast.makeText(scanfinal.this, "Text Saved Sucessfully", LENGTH_SHORT).show();
+
+                            }
+                        }
+                        else{
+                            Toast.makeText(scanfinal.this,"Already saved in history", LENGTH_SHORT).show();
+                        }
+                        //startActivity(intent3);
+                    }
+                });
+
 
         copybutton.setOnClickListener(new View.OnClickListener() {
             @Override
