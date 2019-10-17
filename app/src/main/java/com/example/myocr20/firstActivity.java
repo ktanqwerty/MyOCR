@@ -26,7 +26,7 @@ public class firstActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
 
-       TextView textView = findViewById(R.id.textview);
+       TextView textView = findViewById(R.id.textView);
        textView.setText("Optical Character recognition is the app which gets text from the given photo");
 
 
