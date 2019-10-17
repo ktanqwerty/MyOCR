@@ -221,6 +221,8 @@ import java.util.List;
             startActivity(intenth);
 
         } else if (id == R.id.nav_about) {
+            Intent intenth1 = new Intent(MainActivity.this , firstActivity.class);
+            startActivity(intenth1);
 
         }  else if (id == R.id.nav_share) {
 
