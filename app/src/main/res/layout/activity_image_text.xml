@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="437dp"
-        android:layout_height="677dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="64dp"
         app:layout_constraintBottom_toBottomOf="@+id/scantext"
         app:layout_constraintEnd_toEndOf="parent"
@@ -17,7 +17,7 @@
 
     <Button
         android:id="@+id/scantext"
-        android:layout_width="490dp"
+        android:layout_width="0dp"
         android:layout_height="66dp"
         android:background="@drawable/fui_idp_button_background_github"
         android:text="Scan Text"

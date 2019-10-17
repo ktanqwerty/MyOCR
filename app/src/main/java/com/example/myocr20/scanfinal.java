@@ -100,7 +100,8 @@ public class scanfinal extends AppCompatActivity {
                     scannedtext = a.toString();
                     // Log.i("a",scannedtext);
                     if (items.size() == 0) {
-                        editText.setText("NO TEXT");
+                       // editText.setText("NO TEXT");
+                        Toast.makeText(this,"Click Proper Image", LENGTH_SHORT).show();
                     } else {
                         editText.setText(a.toString());
                     }
@@ -126,7 +127,10 @@ public class scanfinal extends AppCompatActivity {
                                 DatabaseReference myRef = database.getReference("Users");
                                 scannedtext =  editText.getText().toString();
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                myRef.child(user.getUid()).push().setValue(scannedtext);
+                                if(scannedtext.length() !=0){
+                                    myRef.child(user.getUid()).push().setValue(scannedtext);
+                                }
+
                                 Toast.makeText(scanfinal.this, "Text Saved Sucessfully", LENGTH_SHORT).show();
 
                             }

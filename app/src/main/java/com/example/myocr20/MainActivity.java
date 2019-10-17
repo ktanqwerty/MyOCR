@@ -106,7 +106,10 @@ import java.util.List;
 
         View headerview = nav.getHeaderView(0);
         TextView htextview = headerview.findViewById(R.id.textemail);
-        htextview.setText(user.getEmail());
+        if(user!=null){
+            htextview.setText(user.getEmail());
+        }
+
 
         //camera
 
