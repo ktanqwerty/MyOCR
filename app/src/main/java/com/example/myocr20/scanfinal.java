@@ -1,6 +1,8 @@
 package com.example.myocr20;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.gridlayout.widget.GridLayout;
 
 import android.app.SearchManager;
 import android.content.ClipData;
@@ -36,15 +38,13 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class scanfinal extends AppCompatActivity {
     Bitmap bitmap1;
     Button savetext;
-    Button copybutton;
-    Button googlebutton;
-    Button mailbutton;
-    Button speakbutton;
+
     EditText editText;
      String scannedtext;
      Uri uri;
     TextToSpeech tts;
     String value1;
+    GridLayout mainGrid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +52,13 @@ public class scanfinal extends AppCompatActivity {
 
 
         Intent intent2 = getIntent();
+        mainGrid= (androidx.gridlayout.widget.GridLayout) findViewById(R.id.mainGrid);
         editText = findViewById(R.id.editText);
         savetext = findViewById(R.id.saveText);
-        copybutton = findViewById(R.id.copy);
+        /*copybutton = findViewById(R.id.copy);
         googlebutton = findViewById(R.id.googleb);
         mailbutton = findViewById(R.id.gmailb);
-        speakbutton = findViewById(R.id.speakb);
+        speakbutton = findViewById(R.id.speakb);*/
 
         //change
             bitmap1 = intent2.getParcelableExtra("Bitmap");
@@ -123,6 +124,7 @@ public class scanfinal extends AppCompatActivity {
                                 //  intent3.putExtra("scannedtext", scannedtext.toString());
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference myRef = database.getReference("Users");
+                                scannedtext =  editText.getText().toString();
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 myRef.child(user.getUid()).push().setValue(scannedtext);
                                 Toast.makeText(scanfinal.this, "Text Saved Sucessfully", LENGTH_SHORT).show();
@@ -136,53 +138,61 @@ public class scanfinal extends AppCompatActivity {
                     }
                 });
 
-
-        copybutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("label", scannedtext);
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(scanfinal.this,"Text Copied to Clipboard",LENGTH_SHORT).show();
-            }
-        });
-
-        googlebutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-                intent.putExtra(SearchManager.QUERY, scannedtext); // query contains search string
-                startActivity(intent);
-            }
-        });
-
-        mailbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO , Uri.parse("mailto:"+ scannedtext));
-                //emailIntent.setType("plain/text");
-                startActivity(emailIntent);
-            }
-        });
-
-        speakbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                 tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+        for (int k=0;k<mainGrid.getChildCount();k++)
+        {
+            CardView cardView = (CardView)mainGrid.getChildAt(k);
+            if(k==0)
+            {
+                cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onInit(int i) {
-                        if(i!= TextToSpeech.ERROR){
-                            tts.setLanguage(Locale.US);
-                            String toSpeak = scannedtext;
-                            tts.speak(toSpeak,TextToSpeech.QUEUE_FLUSH,null);
-                        }
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+                        intent.putExtra(SearchManager.QUERY, scannedtext); // query contains search string
+                        startActivity(intent);
                     }
                 });
-
-
-
             }
-        });
+            if(k==1)
+            {
+                cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent emailIntent = new Intent(Intent.ACTION_SENDTO , Uri.parse("mailto:"+ scannedtext));
+                        startActivity(emailIntent);
+                    }
+                });
+            }
+            if(k==2)
+            {
+                cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+                            @Override
+                            public void onInit(int i) {
+                                if(i!= TextToSpeech.ERROR){
+                                    tts.setLanguage(Locale.US);
+                                    String toSpeak = scannedtext;
+                                    tts.speak(toSpeak,TextToSpeech.QUEUE_FLUSH,null);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+            if(k==3)
+            {
+                cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("label", scannedtext);
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(scanfinal.this,"Text Copied to Clipboard",LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
 
 
     }
